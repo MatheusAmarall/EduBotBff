@@ -1,12 +1,19 @@
 using EduBot.Application;
 using EduBot.Application.Common.Interfaces;
 using EduBot.Infrastructure;
+using EduBot.Infrastructure.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariables.RASA_URL))) {
+    builder.Configuration["ServicesUrls:Rasa"] = Environment.GetEnvironmentVariable(
+        EnvironmentVariables.RASA_URL
+    );
+}
 
 builder.Services
         .AddApplication()
