@@ -10,7 +10,10 @@ namespace EduBot.Application.Interactors.Login {
 
         public async Task<ErrorOr<Unit>> Handle(LoginCommand request, CancellationToken cancellationToken) {
             try {
-                await _authentication.Authenticate(request.Email, request.Password);
+                bool result = await _authentication.Authenticate(request.Email, request.Password);
+                if(!result) {
+                    return Error.Validation(description: "Falha ao logar, verifique os seus dados");
+                }
 
                 return Unit.Value;
             }

@@ -11,7 +11,15 @@ namespace EduBot.Application.Interactors.Register {
 
         public async Task<ErrorOr<Unit>> Handle(RegisterCommand request, CancellationToken cancellationToken) {
             try {
-                await _authentication.RegisterUser(new User(request.isAdmin, request.Matricula, request.Email, request.Password, request.ConfirmPassword));
+                if(request.Password != request.ConfirmPassword) {
+                    return Error.Validation(description: "As senhas não coincidem");
+                }
+
+                string result = await _authentication.RegisterUser(new User(request.isAdmin, request.Matricula, request.Email, request.Password, request.ConfirmPassword));
+
+                if(result != "") {
+                    return Error.Validation(description: result);
+                }
 
                 return Unit.Value;
             }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using EduBot.Application.Interactors.Bot.SendMessage;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace EduBot.Api.Controllers {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class BotController : ApiController {
         public BotController(IMediator mediator)
             : base(mediator) { }

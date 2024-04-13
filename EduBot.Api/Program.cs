@@ -17,7 +17,9 @@ if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariable
 
 builder.Services
         .AddApplication()
-        .AddInfrastructure(builder.Configuration);
+        .AddInfrastructure(builder.Configuration)
+        .ConfigureJWT(builder.Configuration)
+        .ConfigureDatabase(builder.Configuration);
 
 string? origin = builder.Configuration["OriginUrl"];
 
