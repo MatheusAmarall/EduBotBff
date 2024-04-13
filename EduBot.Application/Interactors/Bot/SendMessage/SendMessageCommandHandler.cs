@@ -1,17 +1,28 @@
-﻿using EduBot.Application.Common.Services;
+﻿using AutoMapper;
+using EduBot.Application.Common.Services;
 using MediatR;
 
 namespace EduBot.Application.Interactors.Bot.SendMessage {
-    public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, IEnumerable<SendMessageCommandResult>> {
+    public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, ErrorOr<IEnumerable<SendMessageCommandResult>>> {
         private readonly IRasaService _rasaService;
-        public SendMessageCommandHandler(IRasaService rasaService) {
+        private readonly IMapper _mapper;
+        public SendMessageCommandHandler(IRasaService rasaService, IMapper mapper) {
             _rasaService = rasaService;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<SendMessageCommandResult>> Handle(SendMessageCommand request, CancellationToken cancellationToken) {
-            var result = await _rasaService.SendMessageAsync(request);
+        public async Task<ErrorOr<IEnumerable<SendMessageCommandResult>>> Handle(SendMessageCommand request, CancellationToken cancellationToken) {
+            try {
+                var result = await _rasaService.SendMessageAsync(request);
 
-            return result;
+                IEnumerable<SendMessageCommandResult> sendMessageResult =
+                        _mapper.Map<IEnumerable<SendMessageCommandResult>>(result);
+
+                return sendMessageResult.ToList();
+            }
+            catch (Exception ex) {
+                return Error.Validation(description: ex.Message);
+            }
         }
     }
 }

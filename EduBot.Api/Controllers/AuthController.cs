@@ -2,40 +2,86 @@
 using EduBot.Application.Interactors.Register;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using EduBot.Application.Interactors.Logout;
+using EduBot.Api.Models;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
-namespace CleanArch.API.Controllers {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase {
-        private IMediator _mediator;
-        public AuthController(IMediator mediator) {
-            _mediator = mediator;
+namespace EduBot.Api.Controllers {
+    public class AuthController : ApiController {
+        private readonly IConfiguration _configuration;
+        public AuthController(IMediator mediator, IConfiguration configuration)
+            : base(mediator)
+        {
+            _configuration = configuration;
         }
 
         [HttpPost("LoginUser")]
-        public async Task<ActionResult> Login([FromBody] LoginCommand userInfo) {
-            var result = await _mediator.Send(userInfo);
+        public async Task<IActionResult> Login([FromBody] LoginCommand userInfo) {
+            ErrorOr<Unit> result = await CommandAsync(userInfo)
+                .ConfigureAwait(false);
 
-            if (result) {
-                return Ok($"User {userInfo.Email} login successfully");
+            if(result.IsError) {
+                return Problem(result.Errors);
             }
-            else {
-                ModelState.AddModelError(string.Empty, "Invalid Login attempt.");
-                return BadRequest(ModelState);
-            }
+
+            UserToken userToken = GenerateToken(userInfo);
+
+            return Ok(userToken);
         }
 
-        [HttpPost("CreateUser")]
-        public async Task<ActionResult> CreateUser([FromBody] RegisterCommand userInfo) {
-            var result = await _mediator.Send(userInfo);
+        [HttpPost("CreatedUser")]
+        public async Task<IActionResult> CreateUser([FromBody] RegisterCommand userInfo) {
+            ErrorOr<Unit> result = await CommandAsync(userInfo)
+                .ConfigureAwait(false);
 
-            if (result) {
-                return Ok($"User {userInfo.Email} was create successfully");
+            return result.IsError ? Problem(result.Errors) : Created($"Usuário {userInfo.Email} criado com sucesso");
+        }
+
+        [HttpPost("LogoutUser")]
+        public async Task<IActionResult> LogoutUser([FromBody] LogoutCommand userInfo)
+        {
+            ErrorOr<Unit> result = await CommandAsync(userInfo)
+                .ConfigureAwait(false);
+
+            return result.IsError ? Problem(result.Errors) : Ok($"Usuário {userInfo.Email} deslogado com sucesso");
+        }
+
+        private UserToken GenerateToken(LoginCommand userInfo) {
+            try {
+                var claims = new[]
+                {
+                    new Claim("email", userInfo.Email),
+                    new Claim("umValor", "OUTROVALOR"),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+
+                var privateKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"] ?? ""));
+
+                var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.HmacSha256);
+
+                var expiration = DateTime.UtcNow.AddMinutes(60);
+
+                JwtSecurityToken token = new JwtSecurityToken(
+                    issuer: _configuration["Jwt:Issuer"],
+                    audience: _configuration["Jwt:Audience"],
+                    claims: claims,
+                    expires: expiration,
+                    signingCredentials: credentials
+                    );
+
+                return new UserToken() {
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    Expiration = expiration
+                };
             }
-            else {
-                ModelState.AddModelError(string.Empty, "Failed to register user.");
-                return BadRequest(ModelState);
+            catch(Exception ex) {
+                throw;
             }
+            
         }
     }
 }

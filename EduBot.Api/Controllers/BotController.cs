@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using EduBot.Application.Interactors.Bot.SendMessage;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace CleanArch.API.Controllers {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BotController : ControllerBase {
-        private IMediator _mediator;
-        public BotController(IMediator mediator) {
-            _mediator = mediator;
-        }
+namespace EduBot.Api.Controllers {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class BotController : ApiController {
+        public BotController(IMediator mediator)
+            : base(mediator) { }
 
         [HttpPost("SendMessage")]
-        public async Task<ActionResult> SendMessage([FromBody] SendMessageCommand request) {
-            var result = await _mediator.Send(request);
+        public async Task<IActionResult> SendMessage([FromBody] SendMessageCommand request) {
+            ErrorOr<IEnumerable<SendMessageCommandResult>> result = await CommandAsync(request)
+                .ConfigureAwait(false);
 
-            return Ok(result);
+            return result.IsError ? Problem(result.Errors) : Ok(result.Value);
         }
     }
 }

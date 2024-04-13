@@ -17,7 +17,9 @@ if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariable
 
 builder.Services
         .AddApplication()
-        .AddInfrastructure(builder.Configuration);
+        .AddInfrastructure(builder.Configuration)
+        .ConfigureJWT(builder.Configuration)
+        .ConfigureDatabase(builder.Configuration);
 
 string? origin = builder.Configuration["OriginUrl"];
 
@@ -46,7 +48,10 @@ if (!string.IsNullOrEmpty(origin)) {
     app.UseCors("CorsPolicy");
 }
 
-SeedUserRoles(app);
+
+await SeedUserRolesAsync(app);
+
+
 
 app.UseHttpsRedirection();
 
@@ -56,11 +61,11 @@ app.MapControllers();
 
 app.Run();
 
-void SeedUserRoles(IApplicationBuilder app) {
+async Task SeedUserRolesAsync(IApplicationBuilder app) {
     using (var serviceScope = app.ApplicationServices.CreateScope()) {
         var seed = serviceScope.ServiceProvider.GetService<ISeedUserRoleInitial>();
 
-        seed.SeedRoles();
-        seed.SeedUsers();
+        await seed.SeedRoles();
     }
 }
+

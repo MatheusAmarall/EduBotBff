@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AspNetCore.Identity.MongoDbCore.Models;
+using MongoDbGenericRepository.Attributes;
 
 namespace EduBot.Infrastructure.Identity {
-    public class ApplicationUser : IdentityUser {
+    [CollectionName("Users")]
+    public class ApplicationUser : MongoIdentityUser<Guid> {
+        public string Matricula { get; set; } = string.Empty;
     }
 }
