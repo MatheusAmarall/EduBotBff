@@ -1,7 +1,7 @@
 ﻿using MediatR;
 
 namespace EduBot.Application.Interactors.Register {
-    public class RegisterCommand : IRequest<bool> {
+    public class RegisterCommand : IRequest<ErrorOr<Unit>> {
 
         public bool isAdmin { get; set; }
         public string Matricula { get; set; } = string.Empty;
