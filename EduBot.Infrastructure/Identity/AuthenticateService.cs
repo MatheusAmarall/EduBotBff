@@ -1,4 +1,5 @@
 ﻿using EduBot.Application.Common.Interfaces;
+using EduBot.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace EduBot.Infrastructure.Identity {
@@ -17,13 +18,14 @@ namespace EduBot.Infrastructure.Identity {
             return result.Succeeded;
         }
 
-        public async Task<bool> RegisterUser(string email, string password) {
+        public async Task<bool> RegisterUser(User user) {
             var applicationUser = new ApplicationUser {
-                UserName = email,
-                Email = email
+                UserName = user.Email,
+                Email = user.Email,
+                Matricula = user.Matricula,
             };
 
-            var result = await _userManager.CreateAsync(applicationUser, password);
+            var result = await _userManager.CreateAsync(applicationUser, user.Password);
 
             if (result.Succeeded) {
                 await _signInManager.SignInAsync(applicationUser, isPersistent: false);

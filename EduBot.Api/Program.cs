@@ -46,7 +46,11 @@ if (!string.IsNullOrEmpty(origin)) {
     app.UseCors("CorsPolicy");
 }
 
+<<<<<<< Updated upstream
 await SeedUserRolesAsync(app);
+=======
+//SeedUserRoles(app);
+>>>>>>> Stashed changes
 
 app.UseHttpsRedirection();
 
@@ -56,6 +60,7 @@ app.MapControllers();
 
 app.Run();
 
+<<<<<<< Updated upstream
 async Task SeedUserRolesAsync(IApplicationBuilder app) {
     using (var serviceScope = app.ApplicationServices.CreateScope()) {
         var seed = serviceScope.ServiceProvider.GetService<ISeedUserRoleInitial>();
@@ -63,3 +68,13 @@ async Task SeedUserRolesAsync(IApplicationBuilder app) {
         await seed.SeedRoles();
     }
 }
+=======
+//void SeedUserRoles(IApplicationBuilder app) {
+//    using (var serviceScope = app.ApplicationServices.CreateScope()) {
+//        var seed = serviceScope.ServiceProvider.GetService<ISeedUserRoleInitial>();
+
+//        seed.SeedRoles();
+//        seed.SeedUsers();
+//    }
+//}
+>>>>>>> Stashed changes

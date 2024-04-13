@@ -1,4 +1,5 @@
 ﻿using EduBot.Application.Common.Interfaces;
+using EduBot.Domain.Entities;
 using MediatR;
 
 namespace EduBot.Application.Interactors.Register {
@@ -9,7 +10,7 @@ namespace EduBot.Application.Interactors.Register {
         }
 
         public async Task<bool> Handle(RegisterCommand request, CancellationToken cancellationToken) {
-            return await _authentication.RegisterUser(request.Email, request.Password);
+            return await _authentication.RegisterUser(new User(request.isAdmin, request.Matricula, request.Email, request.Password, request.ConfirmPassword));
         }
     }
 }
