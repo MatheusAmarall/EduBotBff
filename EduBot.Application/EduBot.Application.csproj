@@ -13,4 +13,8 @@
     <PackageReference Include="Refit" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EduBot.Domain\EduBot.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

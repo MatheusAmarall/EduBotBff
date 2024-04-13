@@ -3,25 +3,23 @@ using EduBot.Application.Common.Services;
 using EduBot.Infrastructure.Configurations;
 using EduBot.Infrastructure.Context;
 using EduBot.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using EduBot.Infrastructure.Persistence.Context;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Refit;
+using Microsoft.AspNetCore.Identity.MongoDB;
 
 namespace EduBot.Infrastructure {
     public static class DependencyInjectionRegister {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) {
-            string mySqlConnection = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(mySqlConnection,
-                ServerVersion.AutoDetect(mySqlConnection), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+            
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>("mongodb://localhost:27017", "Identity")
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<IMongoDbContext, MongoDbContext>();
             services.AddScoped<IAuthenticate, AuthenticateService>();
             services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
@@ -41,6 +39,25 @@ namespace EduBot.Infrastructure {
                 });
 
             return services;
+        }
+
+        public static IServiceCollection ConfigureDatabase(
+            this IServiceCollection services,
+            IConfiguration configuration
+        ) {
+            var mongoDbSettings = new MongoDbSettings();
+            configuration.GetSection(MongoDbSettings.SectionName).Bind(mongoDbSettings);
+            mongoDbSettings.ConnectionString = CreateMongoDbConnectionString(configuration);
+            services.AddSingleton(Options.Create(mongoDbSettings));
+
+            return services;
+        }
+
+        private static string CreateMongoDbConnectionString(IConfiguration configuration) {
+            string mongoDbConnectionString =
+                configuration["MongoDbSettings:ConnectionString"] ?? "";
+
+            return mongoDbConnectionString;
         }
     }
 }
