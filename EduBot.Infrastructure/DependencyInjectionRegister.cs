@@ -1,7 +1,6 @@
 ﻿using EduBot.Application.Common.Interfaces;
 using EduBot.Application.Common.Services;
 using EduBot.Infrastructure.Configurations;
-using EduBot.Infrastructure.Context;
 using EduBot.Infrastructure.Identity;
 using EduBot.Infrastructure.Persistence.Context;
 using Microsoft.Extensions.Configuration;
