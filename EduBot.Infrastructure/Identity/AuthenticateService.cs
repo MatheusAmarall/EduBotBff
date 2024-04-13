@@ -7,6 +7,7 @@ namespace EduBot.Infrastructure.Identity {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
+
         public AuthenticateService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -25,9 +26,20 @@ namespace EduBot.Infrastructure.Identity {
                 Matricula = user.Matricula,
             };
 
+
+
             var result = await _userManager.CreateAsync(applicationUser, user.Password);
 
             if (result.Succeeded) {
+                if (user.IsAdmin)
+                {
+                    _userManager.AddToRoleAsync(applicationUser, "ADMIN").Wait();
+                }
+                else
+                {
+                    _userManager.AddToRoleAsync(applicationUser, "USER").Wait();
+                }
+
                 await _signInManager.SignInAsync(applicationUser, isPersistent: false);
             }
 

@@ -16,7 +16,7 @@ namespace EduBot.Infrastructure {
 
             services.AddScoped<IMongoDbContext, MongoDbContext>();
             services.AddScoped<IAuthenticate, AuthenticateService>();
-            //services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
+            services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
             var servicesUrls = new ServicesUrls();
             configuration.GetSection(ServicesUrls.SectionName).Bind(servicesUrls);
