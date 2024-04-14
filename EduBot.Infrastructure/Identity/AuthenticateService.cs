@@ -1,5 +1,7 @@
-﻿using EduBot.Application.Common.Interfaces;
+﻿using EduBot.Application.Common.DTOs;
+using EduBot.Application.Common.Interfaces;
 using EduBot.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace EduBot.Infrastructure.Identity {
@@ -7,10 +9,21 @@ namespace EduBot.Infrastructure.Identity {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-
         public AuthenticateService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) {
             _signInManager = signInManager;
             _userManager = userManager;
+        }
+
+        public async Task<UserInfoResultDto?> GetUserInfoAsync(string email) {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null) {
+                return null;
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            
+            return new UserInfoResultDto(user.Email, roles.FirstOrDefault());
         }
 
         public async Task<bool> Authenticate(string email, string password) {

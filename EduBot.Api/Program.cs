@@ -21,21 +21,14 @@ builder.Services
         .ConfigureJWT(builder.Configuration)
         .ConfigureDatabase(builder.Configuration);
 
-string? origin = builder.Configuration["OriginUrl"];
-
-if (!string.IsNullOrEmpty(origin)) {
-    builder.Services.AddCors(o =>
-        o.AddPolicy(
-            "CorsPolicy",
-            corsPolicyBuilder => {
-                corsPolicyBuilder.WithOrigins(origin).AllowAnyMethod().AllowAnyHeader();
-            }
-        )
-    );
-}
-else {
-    builder.Services.AddCors();
-}
+builder.Services.AddCors(o =>
+    o.AddPolicy(
+        "CorsPolicy",
+        corsPolicyBuilder => {
+            corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        }
+    )
+);
 
 var app = builder.Build();
 
@@ -44,16 +37,13 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-if (!string.IsNullOrEmpty(origin)) {
-    app.UseCors("CorsPolicy");
-}
-
+app.UseCors("CorsPolicy");
 
 await SeedUserRolesAsync(app);
 
-
-
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
