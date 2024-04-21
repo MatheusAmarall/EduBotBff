@@ -1,12 +1,15 @@
 ﻿using EduBot.Application.Common.Interfaces;
 using EduBot.Domain.Entities;
 using MediatR;
+using Vips.EstoqueBase.Application.Common.Interfaces.Persistence;
 
 namespace EduBot.Application.Interactors.Register {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<Unit>> {
         private readonly IAuthenticate _authentication;
-        public RegisterCommandHandler(IAuthenticate authentication) {
+        private readonly IUnitOfWork _unitOfWork;
+        public RegisterCommandHandler(IAuthenticate authentication, IUnitOfWork unitOfWork) {
             _authentication = authentication;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ErrorOr<Unit>> Handle(RegisterCommand request, CancellationToken cancellationToken) {
@@ -15,7 +18,19 @@ namespace EduBot.Application.Interactors.Register {
                     return Error.Validation(description: "As senhas não coincidem");
                 }
 
-                string result = await _authentication.RegisterUser(new User(request.isAdmin, request.Matricula, request.Email, request.Password, request.ConfirmPassword));
+                List<Matricula>  matriculasCadastradas = await _unitOfWork.Matriculas.GetMatriculasByRole(request.IsAdmin);
+
+                var matriculaUsuario = matriculasCadastradas.Find(m => m.MatriculaUsuario == request.Matricula);
+                if(matriculaUsuario is null) {
+                    return Unit.Value;
+                }
+
+                bool matriculaExistente = _authentication.VerificarMatriculaExistente(request.Matricula);
+                if(matriculaExistente) {
+                    return Error.Validation(description: "Já existe um usuário cadastrado com a matrícula");
+                }
+
+                string result = await _authentication.RegisterUser(new User(request.IsAdmin, request.Matricula, request.Email, request.Password, request.ConfirmPassword));
 
                 if(result != "") {
                     return Error.Validation(description: result);

@@ -28,13 +28,6 @@ public abstract class MongoDbRepository<TEntity> : IBaseRepository<TEntity>
         );
     }
 
-    public void DeleteRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken) {
-        string[] ids = entities.Select(x => x.Id).ToArray();
-        Context.AddCommand(
-            () => _collection.DeleteManyAsync(x => ids.Contains(x.Id), cancellationToken)
-        );
-    }
-
     public void UpdateRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken) {
         foreach (TEntity entity in entities) {
             Update(entity, cancellationToken);

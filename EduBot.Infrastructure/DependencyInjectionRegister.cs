@@ -10,6 +10,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
 using System.Text;
+using Vips.EstoqueBase.Application.Common.Interfaces.Persistence;
+using Vips.EstoqueBase.Infrastructure.Persistence;
+using Vips.EstoqueBase.Infrastructure.Persistence.MongoDb;
 
 namespace EduBot.Infrastructure {
     public static class DependencyInjectionRegister {
@@ -20,6 +23,9 @@ namespace EduBot.Infrastructure {
             services.AddScoped<IMongoDbContext, MongoDbContext>();
             services.AddScoped<IAuthenticate, AuthenticateService>();
             services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
+            services.AddScoped<IConversationsRepository, ConversationsMongoDbRepository>();
+            services.AddScoped<IMatriculasRepository, MatriculasMongoDbRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var servicesUrls = new ServicesUrls();
             configuration.GetSection(ServicesUrls.SectionName).Bind(servicesUrls);

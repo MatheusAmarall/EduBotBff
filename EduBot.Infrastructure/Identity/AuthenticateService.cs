@@ -32,6 +32,12 @@ namespace EduBot.Infrastructure.Identity {
             return result.Succeeded;
         }
 
+        public bool VerificarMatriculaExistente(string matricula) {
+            var existingUser = _userManager.Users.Where(u => u.Matricula == matricula).FirstOrDefault();
+
+            return existingUser != null;
+        }
+
         public async Task<string> RegisterUser(User user) {
             var applicationUser = new ApplicationUser {
                 UserName = user.Email,
