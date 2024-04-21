@@ -1,4 +1,5 @@
-﻿using EduBot.Infrastructure.Configurations;
+﻿using EduBot.Domain.Entities;
+using EduBot.Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -18,6 +19,9 @@ public sealed class MongoDbContext : IMongoDbContext {
     }
 
     private IClientSessionHandle? Session { get; } = null;
+
+    public IMongoCollection<Conversation> Conversations =>
+        _db.GetCollection<Conversation>("conversations");
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
         IEnumerable<Task> commandTasks = _commands.Select(c => c());

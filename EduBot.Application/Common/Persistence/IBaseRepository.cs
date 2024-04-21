@@ -8,8 +8,6 @@ public interface IBaseRepository<TEntity> : IDisposable
 
     void AddRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
 
-    void DeleteRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
-
     void Update(TEntity entity, CancellationToken cancellationToken);
 
     void UpdateRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
