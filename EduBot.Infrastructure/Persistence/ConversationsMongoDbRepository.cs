@@ -25,6 +25,4 @@ public sealed class ConversationsMongoDbRepository
 
         return result;
     }
-
-    
 }

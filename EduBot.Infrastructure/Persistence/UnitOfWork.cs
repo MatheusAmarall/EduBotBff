@@ -9,13 +9,16 @@ public class UnitOfWork : IUnitOfWork {
 
     public UnitOfWork(
         IMongoDbContext context,
-        IConversationsRepository conversations
+        IConversationsRepository conversations,
+        IMatriculasRepository matriculas
     ) {
         _context = context;
         Conversations = conversations;
+        Matriculas = matriculas;
     }
 
     public IConversationsRepository Conversations { get; }
+    public IMatriculasRepository Matriculas { get; }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
         return _context.SaveChangesAsync(cancellationToken);
