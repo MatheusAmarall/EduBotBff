@@ -1,0 +1,150 @@
+version: "3.1"
+
+nlu:
+  - intent: cumprimento
+    examples: |
+      - o 
+      - oi
+      - oii
+      - ola
+      - bom dia
+      - boa tarde
+      - boa noite
+      - Olá, como vai?
+      - E aí?
+      - Tudo bem?
+      - Como vai?
+
+  - intent: despedida
+    examples: |
+      - tchau
+      - adeus
+      - até mais
+      - tiau
+      - Até mais
+      - Até logo
+      - Até breve
+
+  - intent: afirmacao
+    examples: |
+      - sim
+      - s
+      - claro
+      - sem dúvidas
+      - com certeza
+      - obrigado
+      - ok
+      - OK
+      - O.K
+      - O.K.
+      - okay
+
+  - intent: negacao
+    examples: |
+      - não
+      - n
+      - Não, obrigado
+      - Não quero
+      - Não, não estou interessado
+
+  - intent: otimo
+    examples: |
+      - perfeito
+      - ótimo
+      - incrivel
+      - maravilhoso
+      - excelente
+      - muito obrigado
+
+  - intent: bot_challenge
+    examples: |
+      - você é um robô?
+      - você é um ser humano?
+      - estou conversando com um robô?
+      - estou conversando com um ser humano?
+      - Posso saber se estou conversando com uma IA?
+      - Estou interagindo com um programa de computador?
+      - Você é um chatbot ou uma pessoa real?
+
+  - intent: material
+    examples: |
+      - preciso da lista de material
+      - lista de material
+      - qual material o aluno precisa ?
+      - Gostaria de receber a lista de material escolar.
+      - Poderia me fornecer a lista de materiais necessários para o aluno?
+      - Qual é a lista de material escolar que o aluno precisa?
+      - Pode me ajudar com a lista de material escolar?
+      - Estou procurando pela lista de material escolar.
+
+  - intent: cardapio
+    examples: |
+      - preciso dom cardapio
+      - lanche
+      - merenda
+      - gostaria de verificar o lanche
+      - oque os alunos comem
+      - oque tem de comida
+      - refeicões
+      - qual é a merenda?
+      - oque tem de merenda>
+      - oque tem de lanche?
+      - oque é servido para alimentação?
+      - oque é servido de merenda?
+      - oque é servido de lanche?
+      - cardapio maternal
+      - cardapio pre-escola
+      - cardapio pre escola
+
+  - intent: cardapio_escolha
+    examples: |
+      - [cardápio maternal](tipo_cardapio)
+      - [cardápio pré-escola](tipo_cardapio)
+  
+  - intent: material_escolha
+    examples: |
+      - [maternal](tipo_material)
+      - [pre-escola](tipo_material)
+
+  - intent: visitante_escolha
+    examples: |
+      - [Cardápio](tipo_visitante)
+      - [Matricula](tipo_visitante)
+      - [Lista de Espera](tipo_visitante)
+      - [Lista de Materiais](tipo_visitante)
+ 
+ 
+   
+
+  - intent: lista_espera
+    examples: |
+      - lista de espera
+      - gostaria de saber onde encontro a lista de espera
+      - Onde encontro a lista de espera?
+      - Como posso acessar a lista de espera?
+      - Gostaria de informações sobre a lista de espera
+      - Estou interessado na lista de espera
+
+  - intent: matricula
+    examples: |
+      - matricula
+      - gostaria de saber como faço a matricula
+      - Como faço para realizar a matrícula?
+      - Gostaria de informações sobre o processo de matrícula.
+      - Como posso me matricular?
+      - Quero fazer a matrícula. Como procedo?
+      - Estou interessado em me matricular. Qual é o procedimento?
+
+  - intent: aulas
+    examples: |
+      - cronograma de aulas
+      - Qual é o cronograma das aulas?
+      - O cronograma de aulas está disponível?
+      - Como posso acessar o cronograma de aulas?
+      - Onde posso encontrar o cronograma de aulas?
+
+
+  - intent: visitante
+    examples: |
+      - visitante
+

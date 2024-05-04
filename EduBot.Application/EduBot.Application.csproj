@@ -20,10 +20,17 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Refit" Version="7.0.0" />
 	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+	<PackageReference Include="YamlDotNet" Version="15.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EduBot.Domain\EduBot.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ChatBotFiles\nlu.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
