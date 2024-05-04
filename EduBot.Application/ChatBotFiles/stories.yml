@@ -1,0 +1,116 @@
+version: "3.1"
+
+stories:
+
+- story: path 1
+  steps:
+  - intent: cumprimento
+  - action: utter_cumprimento
+  - intent: afirmacao
+  - action: utter_afirmacao
+  - intent: bot_challenge
+  - action: utter_bot_challenge
+  - intent: despedida
+  - action: utter_goodbye
+ 
+- story: path 2
+  steps:
+  - intent: lista_espera
+  - action: utter_lista_espera
+  - intent: matricula
+  - action: utter_matricula
+
+- story: escolher lista de materiais
+  steps:
+    - intent: material
+    - action: tipo_material_form
+    - active_loop: tipo_material_form
+    - slot_was_set:
+      - requested_slot: tipo_material
+    - slot_was_set:
+      - requested_slot: null
+    - active_loop: null
+    - action: action_mostrar_lista_material
+
+- story: escolher cardapio
+  steps:
+    - intent: cardapio
+    - action: tipo_cardapio_form
+    - active_loop: tipo_cardapio_form
+    - slot_was_set:
+      - requested_slot: tipo_cardapio
+    - slot_was_set:
+      - requested_slot: null
+    - active_loop: null
+    - action: action_mostrar_cardapio
+ 
+     
+- story: visitante escolha
+  steps:
+    - intent: visitante
+    - action: tipo_visitante_form
+    - active_loop: tipo_visitante_form
+    - slot_was_set:
+      - requested_slot: tipo_visitante
+    - slot_was_set:
+      - requested_slot: null
+    - active_loop: null
+    - action: action_mostrar_escolha_visitante
+
+
+- story: visitante escolha_cardapio
+  steps:
+    - intent: visitante
+    - action: tipo_visitante_form
+    - active_loop: tipo_visitante_form
+    - slot_was_set:
+      - requested_slot: tipo_visitante
+    - intent: cardapio
+    - slot_was_set:
+      - requested_slot: tipo_cardapio_form
+    - active_loop: null
+    - action: action_mostrar_cardapio
+
+- story: pedir cronograma de aulas path 4
+  steps:
+  - intent: aulas
+  - action: utter_cronograma_aulas
+
+- story: quando faz elogio ao edubot path 5
+  steps:
+  - intent: otimo
+  - action: utter_otimo
+
+- story: quando faz negacao ao edubot path 6
+  steps:
+  - intent: negacao
+  - action: utter_negacao
+     
+
+- story: interactive_story_1
+  steps:
+  - intent: material
+  - action: tipo_material_form
+  - active_loop: tipo_material_form
+  - slot_was_set:
+    - requested_slot: tipo_material
+  - intent: material_escolha
+
+
+- story: interactive_story_2
+  steps:
+  - intent: cardapio
+  - action: tipo_cardapio_form
+  - active_loop: tipo_cardapio_form
+  - slot_was_set:
+    - requested_slot: tipo_cardapio
+  - intent: cardapio_escolha
+
+- story: interactive_story_3
+  steps:
+  - intent: visitante
+  - action: tipo_visitante_form
+  - active_loop: tipo_visitante_form
+  - slot_was_set:
+    - requested_slot: tipo_visitante
+  - intent: visitante_escolha
