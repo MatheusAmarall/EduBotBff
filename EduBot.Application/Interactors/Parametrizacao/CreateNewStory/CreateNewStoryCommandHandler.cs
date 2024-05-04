@@ -1,17 +1,14 @@
 ﻿using EduBot.Domain.Entities;
 using MediatR;
-using Vips.EstoqueBase.Application.Common.Interfaces.Persistence;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace EduBot.Application.Interactors.Bot.CreateIntent {
-    public class CreateIntentCommandHandler : IRequestHandler<CreateIntentCommand, ErrorOr<CreateIntentCommandResult>> {
-        private readonly IUnitOfWork _unitOfWork;
-        public CreateIntentCommandHandler(IUnitOfWork unitOfWork) {
-            _unitOfWork = unitOfWork;
+namespace EduBot.Application.Interactors.Bot.CreateNewStory {
+    public class CreateNewStoryCommandHandler : IRequestHandler<CreateNewStoryCommand, ErrorOr<Unit>> {
+        public CreateNewStoryCommandHandler() {
         }
 
-        public async Task<ErrorOr<CreateIntentCommandResult>> Handle(CreateIntentCommand request, CancellationToken cancellationToken) {
+        public Task<ErrorOr<Unit>> Handle(CreateNewStoryCommand request, CancellationToken cancellationToken) {
             try {
                 CreateIntent();
 
@@ -19,10 +16,10 @@ namespace EduBot.Application.Interactors.Bot.CreateIntent {
 
                 CreateStory();
 
-                return new CreateIntentCommandResult();
+                return Task.FromResult<ErrorOr<Unit>>(Unit.Value);
             }
             catch (Exception ex) {
-                return Error.Validation(description: ex.Message);
+                return Task.FromResult<ErrorOr<Unit>>(Error.Validation(description: ex.Message));
             }
         }
 
