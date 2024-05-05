@@ -40,6 +40,7 @@ namespace EduBot.Infrastructure {
                                 "Url não configurada para o serviço do Rasa"
                             )
                     );
+                    c.Timeout = TimeSpan.FromSeconds(500);
                 });
 
             return services;
