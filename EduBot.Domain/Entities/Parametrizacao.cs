@@ -1,15 +1,12 @@
-﻿using System.Text.Json.Serialization;
-using YamlDotNet.Serialization;
-
-namespace EduBot.Application.Common.DTOs {
-    public class RetrieveLoadedDomainDto {
-        public string Version { get; set; }
+﻿namespace EduBot.Domain.Entities
+{
+    public class Parametrizacao : Entity
+    {
         public List<Dictionary<string, object>>? Pipeline { get; set; }
         public List<Dictionary<string, object>>? Rules { get; set; }
         public List<Dictionary<string, object>>? Nlu { get; set; }
         public List<Dictionary<string, object>>? Stories { get; set; }
         public List<Dictionary<string, object>>? Policies { get; set; }
-        public List<string> E2eActions { get; set; } = new List<string>();
         public List<string>? Intents { get; set; }
         public List<string>? Entities { get; set; }
         public Dictionary<string, Slot> Slots { get; set; }
