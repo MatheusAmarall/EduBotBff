@@ -25,6 +25,7 @@ namespace EduBot.Infrastructure {
             services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
             services.AddScoped<IConversationsRepository, ConversationsMongoDbRepository>();
             services.AddScoped<IMatriculasRepository, MatriculasMongoDbRepository>();
+            services.AddScoped<IParametrizacoesRepository, ParametrizacoesMongoDbRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var servicesUrls = new ServicesUrls();
