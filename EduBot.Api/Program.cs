@@ -1,10 +1,12 @@
 using EduBot.Application;
+using EduBot.Application.Common.Hubs;
 using EduBot.Application.Common.Interfaces;
 using EduBot.Infrastructure;
 using EduBot.Infrastructure.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -25,7 +27,7 @@ builder.Services.AddCors(o =>
     o.AddPolicy(
         "CorsPolicy",
         corsPolicyBuilder => {
-            corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            corsPolicyBuilder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins("http://localhost:3000");
         }
     )
 );
@@ -48,6 +50,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<HubProvider>("/Hub");
 
 app.Run();
 
