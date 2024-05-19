@@ -28,6 +28,9 @@ public sealed class MongoDbContext : IMongoDbContext {
     public IMongoCollection<Parametrizacao> Parametrizacoes =>
         _db.GetCollection<Parametrizacao>("parametrizacoes");
 
+    public IMongoCollection<Conversa> Conversas =>
+        _db.GetCollection<Conversa>("conversas");
+
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
         IEnumerable<Task> commandTasks = _commands.Select(c => c());
         if (_useTransaction) {

@@ -11,17 +11,20 @@ public class UnitOfWork : IUnitOfWork {
         IMongoDbContext context,
         IConversationsRepository conversations,
         IMatriculasRepository matriculas,
-        IParametrizacoesRepository parametrizacoes
+        IParametrizacoesRepository parametrizacoes,
+        IConversasRepository conversas
     ) {
         _context = context;
         Conversations = conversations;
         Matriculas = matriculas;
         Parametrizacoes = parametrizacoes;
+        Conversas = conversas;
     }
 
     public IConversationsRepository Conversations { get; }
     public IMatriculasRepository Matriculas { get; }
     public IParametrizacoesRepository Parametrizacoes { get; }
+    public IConversasRepository Conversas { get; }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
         return _context.SaveChangesAsync(cancellationToken);
