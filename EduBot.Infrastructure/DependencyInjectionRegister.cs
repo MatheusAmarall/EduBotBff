@@ -18,7 +18,7 @@ namespace EduBot.Infrastructure {
     public static class DependencyInjectionRegister {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) {
             services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>("mongodb://localhost:27017", "Identity");
+                .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>("mongodb://localhost:27017", "EduBot");
 
             services.AddScoped<IMongoDbContext, MongoDbContext>();
             services.AddScoped<IAuthenticate, AuthenticateService>();
