@@ -11,18 +11,18 @@ namespace EduBot.Application.Interactors.Bot.GetFuncionalidadesUtilizadas {
 
         public async Task<ErrorOr<IEnumerable<GetFuncionalidadesUtilizadasQueryResult>>> Handle(GetFuncionalidadesUtilizadasQuery request, CancellationToken cancellationToken) {
             try {
-                var result = await _unitOfWork.Conversations.GetByEmailAsync(request.Email);
+                var results = await _unitOfWork.Conversations.GetAllEventsAsync();
 
-                if (result == null) {
+                if (!results.Any()) {
                     return Error.Validation(description: "Sem registros");
                 }
 
-                var utterActions = result.Events
+                var utterActions = results.SelectMany(result => result!.Events)
                     .Where(e => e.Event == "bot" && e.Metadata != null && e.Metadata.UtterAction != null)
                     .Select(e => e.Metadata!.UtterAction!.Split('_').Last())
                     .ToList();
 
-                if(utterActions.Count == 0) {
+                if (utterActions.Count == 0) {
                     return Error.Validation(description: "Sem registros");
                 }
 

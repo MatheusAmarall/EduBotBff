@@ -34,6 +34,28 @@ public sealed class ConversationsMongoDbRepository
         };
     }
 
+    public async Task<IEnumerable<ConversationSimplify?>> GetAllEventsAsync() {
+        var result = await Context
+            .Conversations.AsQueryable().Select(c => new {
+                c.sender_id,
+                c.events
+            }).ToListAsync();
+
+        List<ConversationSimplify> eventos = new();
+
+        result.ForEach(c => {
+            var eventObjects = ConvertEvents(c.events);
+            var evento = new ConversationSimplify {
+                SenderId = c.sender_id,
+                Events = eventObjects
+            };
+
+            eventos.Add(evento);
+        });
+
+        return eventos;
+    }
+
     private List<EventObject> ConvertEvents(List<object> events) {
         List<EventObject> eventList = new List<EventObject>();
 
