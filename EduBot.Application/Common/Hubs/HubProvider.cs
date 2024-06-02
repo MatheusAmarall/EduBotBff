@@ -11,6 +11,8 @@ namespace EduBot.Application.Common.Hubs {
         public async Task SendMessage(MessageDto message) {
             await _messageService.SaveMessageAsync(message);
             await Clients.All.ReceivedMessage(message);
+            List<MessageHistoryDto> messageHistory = await _messageService.MessageHistoryAsync();
+            await Clients.All.MessageHistory(messageHistory);
         }
     }
 }

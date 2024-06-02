@@ -5,4 +5,5 @@ namespace Vips.EstoqueBase.Application.Common.Interfaces.Persistence;
 
 public interface IConversasRepository : IBaseRepository<Conversa> {
     Task<Conversa?> GetConversaByNome(string nomeUsuario);
+    Task<IEnumerable<Conversa>> GetConversasUsuarios();
 }

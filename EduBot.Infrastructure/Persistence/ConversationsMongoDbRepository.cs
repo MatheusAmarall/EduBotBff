@@ -12,28 +12,6 @@ public sealed class ConversationsMongoDbRepository
     public ConversationsMongoDbRepository(IMongoDbContext context)
         : base(context, context.Conversations) { }
 
-    public async Task<ConversationSimplify?> GetByEmailAsync(string email) {
-        var result = await Context
-            .Conversations.AsQueryable()
-            .Where(c => c.sender_id == email)
-            .Select(c => new {
-                c.sender_id,
-                c.events
-            })
-            .FirstOrDefaultAsync();
-
-        if(result == null) {
-            return null;
-        }
-
-        var eventObjects = ConvertEvents(result.events);
-
-        return new ConversationSimplify {
-            SenderId = result.sender_id,
-            Events = eventObjects
-        };
-    }
-
     public async Task<IEnumerable<ConversationSimplify?>> GetAllEventsAsync() {
         var result = await Context
             .Conversations.AsQueryable().Select(c => new {
