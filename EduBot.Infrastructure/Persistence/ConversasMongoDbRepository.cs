@@ -20,4 +20,12 @@ public sealed class ConversasMongoDbRepository
 
         return result;
     }
+
+    public async Task<IEnumerable<Conversa>> GetConversasUsuarios() {
+        var result = await Context
+            .Conversas.AsQueryable()
+            .Where(c => c.Role == "User").ToListAsync();
+
+        return result;
+    }
 }

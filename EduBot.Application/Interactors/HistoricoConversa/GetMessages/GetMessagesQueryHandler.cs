@@ -2,7 +2,7 @@
 using MediatR;
 using Vips.EstoqueBase.Application.Common.Interfaces.Persistence;
 
-namespace EduBot.Application.Interactors.Bot.GetMessages {
+namespace EduBot.Application.Interactors.HistoricoConversa.GetMessages {
     public class GetMessagesQueryHandler : IRequestHandler<GetMessagesQuery, ErrorOr<GetMessagesQueryResult>> {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -13,7 +13,11 @@ namespace EduBot.Application.Interactors.Bot.GetMessages {
 
         public async Task<ErrorOr<GetMessagesQueryResult>> Handle(GetMessagesQuery request, CancellationToken cancellationToken) {
             try {
-                var result = await _unitOfWork.Conversations.GetByEmailAsync(request.Email);
+                var result = await _unitOfWork.Conversas.GetConversaByNome(request.Email);
+
+                if(result is null) {
+                    return new ErrorOr<GetMessagesQueryResult>();
+                }
 
                 GetMessagesQueryResult getMessagesResult =
                         _mapper.Map<GetMessagesQueryResult>(result);

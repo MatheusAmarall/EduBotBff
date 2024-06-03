@@ -13,7 +13,7 @@ namespace EduBot.Application.Interactors.HistoricoConversa.GetAllMessages {
 
         public async Task<ErrorOr<IEnumerable<GetAllMessagesQueryResult>>> Handle(GetAllMessagesQuery request, CancellationToken cancellationToken) {
             try {
-                var result = await _unitOfWork.Conversas.GetAllAsync(cancellationToken);
+                var result = await _unitOfWork.Conversas.GetConversasUsuarios();
 
                 List<GetAllMessagesQueryResult> getAllMessagesResult =
                         _mapper.Map<List<GetAllMessagesQueryResult>>(result);
