@@ -4,6 +4,7 @@
     {
         public string NomeUsuario { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public bool ActiveBot { get; set; } = true;
         public List<Message> Mensagens { get; set; } = new List<Message>();
     }
 
