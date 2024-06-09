@@ -8,9 +8,11 @@ namespace EduBot.Application.Common.Services {
     public class MessageService : IMessageService {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public MessageService(IUnitOfWork unitOfWork, IMapper mapper) {
+        private readonly IRasaService _rasaService;
+        public MessageService(IUnitOfWork unitOfWork, IMapper mapper, IRasaService rasaService) {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _rasaService = rasaService;
         }
         public async Task SaveMessageAsync(MessageDto message) {
             try {
@@ -18,7 +20,7 @@ namespace EduBot.Application.Common.Services {
 
                 var mensagem = new Message() {
                     Sender = message.Sender,
-                    Body = message.Mensagem
+                    Body = message.Body
                 };
 
                 if (result is null) {
@@ -52,6 +54,46 @@ namespace EduBot.Application.Common.Services {
                         _mapper.Map<List<MessageHistoryDto>>(result);
 
                 return messageHistoryResult;
+            }
+            catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<MessageDto>> SendMessageToBotAsync(MessageDto request) {
+            try {
+                var sendMessageRequestDto = new SendMessageRequestDto() {
+                    Message = request.Body,
+                    Sender = request.Sender,
+                };
+
+                var userMessage = new MessageDto() {
+                    NomeUsuario = request.NomeUsuario,
+                    Body = request.Body,
+                    Role = request.Role,
+                    Sender = request.Sender
+                };
+
+                await SaveMessageAsync(userMessage);
+
+                var result = await _rasaService.SendMessageAsync(sendMessageRequestDto);
+                var resultDto = new List<MessageDto>();
+
+                result.ToList().ForEach(async r => {
+                    var botMessage = new MessageDto() {
+                        NomeUsuario = request.NomeUsuario,
+                        Body = r.Text,
+                        Buttons = r.Buttons,
+                        Role = "Bot",
+                        Sender = "EduBot"
+                    };
+
+                    resultDto.Add(botMessage);
+
+                    await SaveMessageAsync(botMessage);
+                });
+
+                return resultDto;
             }
             catch (Exception ex) {
                 throw new Exception(ex.Message);

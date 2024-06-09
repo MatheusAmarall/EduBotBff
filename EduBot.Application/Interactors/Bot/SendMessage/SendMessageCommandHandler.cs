@@ -25,7 +25,7 @@ namespace EduBot.Application.Interactors.Bot.SendMessage {
 
                 var userMessage = new MessageDto() {
                     NomeUsuario = request.NomeUsuario,
-                    Mensagem = request.Mensagem,
+                    Body = request.Mensagem,
                     Role = request.Role,
                     Sender = request.Sender
                 };
@@ -37,9 +37,9 @@ namespace EduBot.Application.Interactors.Bot.SendMessage {
                 result.ToList().ForEach(async r => {
                     var botMessage = new MessageDto() {
                         NomeUsuario = request.NomeUsuario,
-                        Mensagem = r.Text,
+                        Body = r.Text,
                         Role = "Bot",
-                        Sender = "Bot"
+                        Sender = "EduBot"
                     };
 
                     await _messageService.SaveMessageAsync(botMessage);
