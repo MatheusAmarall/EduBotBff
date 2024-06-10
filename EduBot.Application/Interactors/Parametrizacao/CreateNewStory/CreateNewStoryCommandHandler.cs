@@ -3,11 +3,12 @@ using EduBot.Application.Common.DTOs;
 using EduBot.Application.Common.Services;
 using EduBot.Domain.Entities;
 using MediatR;
+using System.Text.RegularExpressions;
 using Vips.EstoqueBase.Application.Common.Interfaces.Persistence;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace EduBot.Application.Interactors.Bot.CreateNewStory {
+namespace EduBot.Application.Interactors.Parametrizacao.CreateNewStory {
     public class CreateNewStoryCommandHandler : IRequestHandler<CreateNewStoryCommand, ErrorOr<Unit>> {
         private readonly IRasaService _rasaService;
         private readonly IMapper _mapper;
@@ -22,9 +23,11 @@ namespace EduBot.Application.Interactors.Bot.CreateNewStory {
             try {
                 var parametrizacoes = await _unitOfWork.Parametrizacoes.GetAllAsync(cancellationToken);
 
-                if(parametrizacoes.Count == 0) {
+                if (parametrizacoes.Count == 0) {
                     return Error.Validation(description: "Erro ao parametrizar, contate o suporte!");
                 }
+
+                await CriaNovaFuncionalidade(request.TituloPergunta);
 
                 var parametrizacao = parametrizacoes.First();
                 var parametrizacaoDto = _mapper.Map<ParametrizacaoDto>(parametrizacao);
@@ -59,14 +62,19 @@ namespace EduBot.Application.Interactors.Bot.CreateNewStory {
                 yamlTreinamento = yamlTreinamento.Replace("sessionConfig", "session_config");
                 yamlTreinamento = yamlTreinamento.Replace("requested_slot", "- requested_slot");
                 yamlTreinamento = yamlTreinamento.Replace("\n  -", "\n    -");
+                // Remover aspas duplas e triplas
+                yamlTreinamento = Regex.Replace(yamlTreinamento, "\"{3}([^\"]*)\"{3}", "\"$1\"");
+                yamlTreinamento = Regex.Replace(yamlTreinamento, "\"{2}([^\"]*)\"{2}", "\"$1\"");
 
                 var trainedModel = await _rasaService.TrainRasaModelAsync("thisismysecret", yamlTreinamento);
 
                 if (trainedModel.IsSuccessStatusCode) {
                     if (trainedModel.Headers.TryGetValues("filename", out var values)) {
-                        string filename = values.FirstOrDefault();
+                        string filename = values.FirstOrDefault()!;
 
                         await _rasaService.ReplaceLoadedModelAsync("thisismysecret", new ReplaceLoadedModelDto($"models{Path.DirectorySeparatorChar}{filename}"));
+
+                        await DisponibilizaNovaFuncionalidade(request.TituloPergunta);
                     }
                 }
                 else {
@@ -112,8 +120,8 @@ namespace EduBot.Application.Interactors.Bot.CreateNewStory {
             );
         }
 
-        private async Task AtualizaBanco(ParametrizacaoDto parametrizacaoDto, Parametrizacao parametrizacao) {
-            var novaParametrizacao = _mapper.Map<Parametrizacao>(parametrizacaoDto);
+        private async Task AtualizaBanco(ParametrizacaoDto parametrizacaoDto, Domain.Entities.Parametrizacao parametrizacao) {
+            var novaParametrizacao = _mapper.Map<Domain.Entities.Parametrizacao>(parametrizacaoDto);
 
             parametrizacao.Nlu = novaParametrizacao.Nlu;
             parametrizacao.Intents = novaParametrizacao.Intents;
@@ -122,6 +130,36 @@ namespace EduBot.Application.Interactors.Bot.CreateNewStory {
             _unitOfWork.Parametrizacoes.Update(parametrizacao, new CancellationToken());
 
             await _unitOfWork.SaveChangesAsync(new CancellationToken());
+        }
+
+        private async Task CriaNovaFuncionalidade(string nomeFuncionalidade) {
+            var funcionalidade = await _unitOfWork.Funcionalidades.GetFuncionalidadeByNome(nomeFuncionalidade);
+
+            if (funcionalidade is null) {
+                var novaFuncionalidade = new Funcionalidade() {
+                    NomeFuncionalidade = nomeFuncionalidade,
+                    Disponivel = false
+                };
+
+                _unitOfWork.Funcionalidades.Add(novaFuncionalidade, CancellationToken.None);
+
+                await _unitOfWork.SaveChangesAsync(new CancellationToken());
+            }
+            else {
+                throw new InvalidOperationException("Funcionalidade já existente");
+            }
+        }
+
+        private async Task DisponibilizaNovaFuncionalidade(string nomeFuncionalidade) {
+            var funcionalidade = await _unitOfWork.Funcionalidades.GetFuncionalidadeByNome(nomeFuncionalidade);
+
+            if (funcionalidade is not null) {
+                funcionalidade.Disponivel = true;
+
+                _unitOfWork.Funcionalidades.Update(funcionalidade, CancellationToken.None);
+
+                await _unitOfWork.SaveChangesAsync(new CancellationToken());
+            }
         }
     }
 }

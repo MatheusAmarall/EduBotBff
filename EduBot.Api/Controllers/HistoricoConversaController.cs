@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using EduBot.Application.Interactors.HistoricoConversa.GetAllMessages;
 using EduBot.Application.Interactors.HistoricoConversa.GetMessages;
+using EduBot.Application.Interactors.Parametrizacao.GetFuncionalidadesParametrizadas;
 
 namespace EduBot.Api.Controllers {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

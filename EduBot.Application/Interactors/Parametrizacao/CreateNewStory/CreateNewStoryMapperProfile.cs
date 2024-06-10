@@ -2,13 +2,13 @@
 using EduBot.Application.Common.DTOs;
 using EduBot.Domain.Entities;
 
-namespace EduBot.Application.Interactors.Bot.GetMessages {
+namespace EduBot.Application.Interactors.Parametrizacao.CreateNewStory {
     public class CreateNewStoryMapperProfile : Profile {
         public CreateNewStoryMapperProfile() {
             CreateMap<string, ResponseDto>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src));
 
-            CreateMap<Parametrizacao, ParametrizacaoDto>().ReverseMap();
+            CreateMap<Domain.Entities.Parametrizacao, ParametrizacaoDto>().ReverseMap();
             CreateMap<Slot, SlotDto>().ReverseMap();
             CreateMap<Form, FormDto>().ReverseMap();
             CreateMap<SessionConfig, SessionConfigDto>().ReverseMap();

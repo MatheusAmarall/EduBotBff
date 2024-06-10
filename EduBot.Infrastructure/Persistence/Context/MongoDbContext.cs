@@ -28,6 +28,9 @@ public sealed class MongoDbContext : IMongoDbContext {
     public IMongoCollection<Parametrizacao> Parametrizacoes =>
         _db.GetCollection<Parametrizacao>("parametrizacoes");
 
+    public IMongoCollection<Funcionalidade> Funcionalidades =>
+        _db.GetCollection<Funcionalidade>("funcionalidades");
+
     public IMongoCollection<Conversa> Conversas =>
         _db.GetCollection<Conversa>("conversas");
 
