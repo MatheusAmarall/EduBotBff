@@ -22,35 +22,8 @@ public abstract class MongoDbRepository<TEntity> : IBaseRepository<TEntity>
         );
     }
 
-    public void AddRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken) {
-        Context.AddCommand(
-            () => _collection.InsertManyAsync(entities, cancellationToken: cancellationToken)
-        );
-    }
-
-    public void UpdateRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken) {
-        foreach (TEntity entity in entities) {
-            Update(entity, cancellationToken);
-        }
-    }
-
-    public void Delete(object id, CancellationToken cancellationToken) {
-        Context.AddCommand(
-            () => _collection.DeleteOneAsync(x => x.Id == (string)id, cancellationToken)
-        );
-    }
-
     public Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken) {
         return _collection.Find(_ => true).ToListAsync(cancellationToken);
-    }
-
-    public async Task<TEntity?> GetByIdAsync(object id, CancellationToken cancellationToken) {
-        TEntity result = await _collection
-            .Find(x => x.Id == (string)id)
-            .FirstOrDefaultAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        return result;
     }
 
     public void Update(TEntity entity, CancellationToken cancellationToken) {
@@ -71,7 +44,6 @@ public abstract class MongoDbRepository<TEntity> : IBaseRepository<TEntity>
     }
 
     public void Dispose() {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }

@@ -5,5 +5,6 @@ public interface IUnitOfWork : IDisposable {
     IMatriculasRepository Matriculas { get; }
     IConversasRepository Conversas { get; }
     IParametrizacoesRepository Parametrizacoes { get; }
+    IFuncionalidadesRepository Funcionalidades { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
