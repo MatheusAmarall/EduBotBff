@@ -5,4 +5,5 @@ namespace Vips.EstoqueBase.Application.Common.Interfaces.Persistence;
 
 public interface IAgendamentosRepository : IBaseRepository<Agendamento> {
     Task<Agendamento?> GetUltimoAgendamentoByNome(string nomeUsuario);
+    Task<List<Agendamento>> GetProximosAgendamentos();
 }

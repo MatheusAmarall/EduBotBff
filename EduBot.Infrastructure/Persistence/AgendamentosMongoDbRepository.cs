@@ -20,4 +20,14 @@ public sealed class AgendamentosMongoDbRepository
 
         return result;
     }
+
+    public async Task<List<Agendamento>> GetProximosAgendamentos() {
+        var result = await Context
+            .Agendamentos.AsQueryable()
+            .Where(c => c.DataAgendamento >= DateTime.Now)
+            .OrderBy(c => c.DataAgendamento)
+            .ToListAsync();
+
+        return result;
+    }
 }
