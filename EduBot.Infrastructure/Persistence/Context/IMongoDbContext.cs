@@ -10,6 +10,7 @@ public interface IMongoDbContext : IDisposable {
     IMongoCollection<Matricula> Matriculas { get; }
     IMongoCollection<Parametrizacao> Parametrizacoes { get; }
     IMongoCollection<Funcionalidade> Funcionalidades { get; }
+    IMongoCollection<Agendamento> Agendamentos { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
     void AddCommand(Func<Task> func);

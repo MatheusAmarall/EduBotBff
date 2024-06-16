@@ -34,6 +34,9 @@ public sealed class MongoDbContext : IMongoDbContext {
     public IMongoCollection<Conversa> Conversas =>
         _db.GetCollection<Conversa>("conversas");
 
+    public IMongoCollection<Agendamento> Agendamentos =>
+        _db.GetCollection<Agendamento>("agendamentos");
+
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
         IEnumerable<Task> commandTasks = _commands.Select(c => c());
         if (_useTransaction) {

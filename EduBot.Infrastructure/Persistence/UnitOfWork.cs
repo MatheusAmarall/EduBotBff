@@ -13,7 +13,8 @@ public class UnitOfWork : IUnitOfWork {
         IMatriculasRepository matriculas,
         IParametrizacoesRepository parametrizacoes,
         IConversasRepository conversas,
-        IFuncionalidadesRepository funcionalidades
+        IFuncionalidadesRepository funcionalidades,
+        IAgendamentosRepository agendamentos
     ) {
         _context = context;
         Conversations = conversations;
@@ -21,6 +22,7 @@ public class UnitOfWork : IUnitOfWork {
         Parametrizacoes = parametrizacoes;
         Conversas = conversas;
         Funcionalidades = funcionalidades;
+        Agendamentos = agendamentos;
     }
 
     public IConversationsRepository Conversations { get; }
@@ -28,6 +30,7 @@ public class UnitOfWork : IUnitOfWork {
     public IParametrizacoesRepository Parametrizacoes { get; }
     public IConversasRepository Conversas { get; }
     public IFuncionalidadesRepository Funcionalidades { get; }
+    public IAgendamentosRepository Agendamentos { get; }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
         return _context.SaveChangesAsync(cancellationToken);

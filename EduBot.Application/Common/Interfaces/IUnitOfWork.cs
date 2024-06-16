@@ -6,5 +6,6 @@ public interface IUnitOfWork : IDisposable {
     IConversasRepository Conversas { get; }
     IParametrizacoesRepository Parametrizacoes { get; }
     IFuncionalidadesRepository Funcionalidades { get; }
+    IAgendamentosRepository Agendamentos { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
